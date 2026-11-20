@@ -1,0 +1,12 @@
+{
+  "slug": "hannah",
+  "name": "초중등 학교생활지원 시스템",
+  "schema": "hannah",
+  "db_role": "hannah_dev",
+  "bucket": "hannah",
+  "function": "hannah-fn",
+  "secret_prefix": "HANNAH_",
+  "supabase_ref": "psupfmarnyxontorftio",
+  "url": "https://apps.bmrschool.net/hannah/",
+  "template": "bmr-app-templates v2"
+}
