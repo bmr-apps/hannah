@@ -8,7 +8,7 @@ export const supabase = createClient(
   {
     db: { schema: 'hannah' }, // 이 앱 스키마
     // 같은 주소(apps.bmrschool.net)를 쓰는 다른 앱과 로그인 저장 칸이 겹치지 않게 이름을 따로 둡니다
-    auth: { storageKey: 'bmr-app-hannah-auth' },
+    auth: { storageKey: 'hannah:auth' },
   },
 );
 // 서버 함수 주소: https://psupfmarnyxontorftio.supabase.co/functions/v1/hannah-fn/hello

@@ -1,0 +1,9 @@
+:root { font-family: system-ui, sans-serif; color: #18344b; background: #f0f5fa; }
+body { margin: auto; padding: 1.25rem; max-width: 38rem; }
+main { padding: clamp(1rem, 5vw, 2.25rem); margin-top: 1rem; background: white; border: 1px solid #c9d9e7; border-radius: 1rem; }
+h1 { margin-top: 0; }
+form:not([hidden]) { display: grid; gap: 1rem; margin-top: 1rem; }
+label { display: grid; gap: .35rem; }
+button, select { font: inherit; padding: .65rem; min-height: 2.75rem; }
+button { border: 0; border-radius: .4rem; background: #174d78; color: white; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
