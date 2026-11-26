@@ -2,8 +2,383 @@ const key = 'hannah:design-test:v1';
 const app = {};
 const listeners = new Set();
 
+const initialWeeklyAvailability = {
+  "월": {
+    "강당": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "과학실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "도서관": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "미술실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "밴드실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관1": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관2": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "세미나실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "음악실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    }
+  },
+  "화": {
+    "강당": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "과학실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "도서관": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "미술실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "밴드실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관1": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관2": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "세미나실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "음악실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    }
+  },
+  "수": {
+    "강당": {
+      "9교시": true,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "과학실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "도서관": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "미술실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "밴드실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관1": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관2": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "세미나실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "음악실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    }
+  },
+  "목": {
+    "6학년": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "7-1": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "7-2": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "8-1": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "8-2": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "강당": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "과학실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "도서관": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "미술실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "밴드실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": true,
+      "저녁2교시": false
+    },
+    "별관1": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "별관2": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "세미나실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "음악실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    }
+  },
+  "금": {
+    "강당": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "과학실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "도서관": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "미술실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "밴드실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관1": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관2": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "세미나실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": true,
+      "저녁2교시": true
+    },
+    "음악실": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    }
+  },
+  "토": {
+    "강당": {
+      "9교시": true,
+      "10교시": true,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "과학실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "도서관": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "미술실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "밴드실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관1": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "별관2": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "세미나실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    },
+    "음악실": {
+      "9교시": false,
+      "10교시": false,
+      "저녁1교시": false,
+      "저녁2교시": false
+    }
+  }
+};
+
 function read() {
-  return JSON.parse(localStorage.getItem(key) ?? '{"adminPassword":"design-test-admin"}');
+  const root = JSON.parse(localStorage.getItem(key) ?? '{"adminPassword":"design-test-admin"}');
+  if (!root.previewWeeklySettingsLoaded) {
+    root.baseWeeklyAvailability ??= structuredClone(initialWeeklyAvailability);
+    root.previewWeeklySettingsLoaded = true;
+    localStorage.setItem(key, JSON.stringify(root));
+  }
+  return root;
 }
 function at(root, parts) {
   return parts.reduce((node, part) => node && Object.hasOwn(node, part) ? node[part] : null, root);
