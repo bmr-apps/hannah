@@ -13,7 +13,7 @@ const cspFor = (SB) => [
 ].join('; ');
 const csp = (CSP) => ({
   name: 'csp-meta', apply: 'build',
-  transformIndexHtml: (html) => html.replace('<meta charset="utf-8">', `<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${CSP}">\n<meta name="referrer" content="strict-origin-when-cross-origin">`),
+  transformIndexHtml: (html) => html.replace(/<meta charset="utf-8"\s*\/?\s*>/i, `<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${CSP}">\n<meta name="referrer" content="strict-origin-when-cross-origin">`),
 });
 // 한 페이지 앱(SPA): 없는 경로로 들어오면 GitHub Pages 가 404.html 을 주므로 index.html 을 복사해 둔다
 const spa404 = () => ({ name: 'spa-404', apply: 'build', closeBundle() { copyFileSync(resolve('dist/index.html'), resolve('dist/404.html')); } });
@@ -25,7 +25,7 @@ export default defineConfig(({ mode, command }) => {
   return {
     base: BASE,
     plugins: [csp(cspFor(SB)), spa404()],
-    build: { target: 'es2022', sourcemap: false },
+    build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0, rollupOptions: { input: [resolve('index.html'), resolve('cleaning_duty_3.html'), resolve('cleaning-print.html')] } },
     server: { port: 5173 }, preview: { port: 4173 },
   };
 });

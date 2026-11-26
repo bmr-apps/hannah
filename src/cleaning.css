@@ -1,0 +1,109 @@
+
+  :root{
+    --blue:#2563eb; --blue-dark:#1d4ed8; --green:#16a34a; --amber:#d97706; --red:#dc2626;
+    --sky:#0284c7; --sky-light:#e0f2fe; --sky-border:#bae6fd;
+    --violet:#7c3aed; --violet-dark:#6d28d9; --violet-light:#ede9fe; --violet-border:#ddd6fe;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db;
+    --gray-500:#6b7280; --gray-700:#374151; --gray-800:#1f2937;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--gray-50); color:var(--gray-800);
+        font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:24px 16px 80px; }
+  .card{ background:#fff; border-radius:14px; box-shadow:0 1px 3px rgba(0,0,0,.08); padding:22px; margin-bottom:18px; }
+  h1{ font-size:1.5rem; font-weight:800; margin:0 0 4px; }
+  .subtitle{ color:var(--gray-500); font-size:.82rem; margin:0 0 16px; }
+  .notice{ background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; font-size:.78rem;
+            border-radius:10px; padding:10px 14px; margin-bottom:18px; }
+  .tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .tab{ padding:8px 16px; border-radius:9px; border:1px solid var(--gray-300); background:#fff;
+        font-size:.85rem; font-weight:700; color:var(--gray-700); cursor:pointer; }
+  .tab.active{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .section-title{ display:flex; align-items:center; gap:8px; font-weight:800; font-size:1rem; margin:0 0 4px; }
+  .badge{ width:22px; height:22px; border-radius:50%; background:var(--blue); color:#fff;
+        font-size:.72rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .desc{ color:var(--gray-500); font-size:.78rem; margin:0 0 12px 30px; }
+  .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-left:30px; margin-bottom:8px; }
+  input, select{ border:1px solid var(--gray-300); border-radius:8px; padding:7px 10px; font-size:.83rem; background:#fff; }
+  input[type=checkbox]{ width:16px; height:16px; }
+  .btn{ border:none; border-radius:8px; padding:8px 16px; font-size:.82rem; font-weight:700;
+        cursor:pointer; color:#fff; background:var(--blue); }
+  .btn:hover{ background:var(--blue-dark); }
+  .btn.small{ padding:4px 10px; font-size:.75rem; }
+  .btn.secondary{ background:var(--gray-100); color:var(--gray-700); border:1px solid var(--gray-300); }
+  .btn.danger{ background:#fef2f2; color:var(--red); border:1px solid #fecaca; }
+  /* 담임교사 요청(2026-09-10): 인쇄 버튼이 회색(.secondary)이라 다른 회색 버튼들 사이에서 잘
+     안 보였다. 인쇄만 눈에 띄는 연보라색으로 구분해준다. */
+  .btn.print{ background:var(--violet-light); color:var(--violet-dark); border:1px solid var(--violet-border); }
+  .btn.print:hover{ background:var(--violet-border); }
+  /* 담임교사 요청(2026-09-14): "저장버튼이 동일하게 파란색이면 좋겠고, 자동배정실행 버튼은
+     진한 보라색이면 좋겠어" — 자동배정 실행 버튼만 인쇄 버튼(연보라, .btn.print)과 구분되는
+     진한 보라색으로 따로 스타일을 준다. 저장 버튼들은 이미 기본 .btn(파란색)을 그대로 쓰고
+     있어 손댈 필요가 없었고, 회색이었던 "전체 주차 저장" 버튼만 기본 파란색으로 맞췄다. */
+  .btn.violet{ background:var(--violet-dark); color:#fff; }
+  .btn.violet:hover{ filter:brightness(0.9); }
+  /* 담임교사 요청(2026-09-16): "이전 데이터 불러오기"는 되돌리기라는 특수한 동작이니
+     다른 버튼들과 구분되게 연한 노란색으로 표시해달라는 요청 — .btn.danger(연빨강)와
+     같은 방식으로, --amber를 이용해 연노랑 버전을 만든다. */
+  .btn.warn{ background:#fef9e7; color:var(--amber); border:1px solid #fde68a; }
+  .btn.warn:hover{ background:#fef3c7; }
+  /* 교무부장 요청(2026-10-06): "파란색은 헷갈리니 하늘색 버튼으로" — "금요일 양육 로테이션
+     일괄 적용" 버튼이 기본 .btn(진한 파란색, 저장류 버튼과 동일)과 섞여 보이지 않도록 연한
+     하늘색으로 따로 구분한다. */
+  .btn.sky{ background:var(--sky-light); color:var(--sky); border:1px solid var(--sky-border); }
+  .btn.sky:hover{ background:var(--sky-border); }
+  /* 담임교사 요청(2026-09-10): "저장했다는 알람이 뜨면 좋겠어. 제대로 저장이 되었는지 구분이
+     안 갈 때가 많다"— 화면 중간에 나오는 안내 박스(.info-box)는 스크롤 위치에 따라 안 보일 수
+     있어서, 고정으로 잠깐 떴다 사라지는 토스트 알림을 모든 저장류 동작(주차 저장·분리수거
+     저장·복사 적용·요일 배정 저장·자동배정 실행·되돌리기·명단 업로드)에 공통으로 추가한다.
+     기존 안내 박스(자세한 내용 포함)는 그대로 두고, 이 토스트는 "저장이 됐다"는 사실 자체를
+     스크롤 없이 바로 알아볼 수 있게 하기 위한 보조 장치다.
+     이어서 담임교사 요청(2026-09-10): "알람이 오른쪽 위에 뜨니까 눈에 잘 인식이 안 되는 것
+     같아. 화면 가운데 알람이 뜰 수 있을까? 모든 알람에 반영되면 좋겠어." — 오른쪽 위 고정
+     위치를 화면 정중앙(상하좌우 모두 가운데)으로 옮겼다. showToast()를 쓰는 모든 호출이 이
+     하나의 #toastHost를 공유하므로, 이 위치만 바꾸면 모든 알람에 자동으로 반영된다. */
+  #toastHost{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999;
+        display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none;
+        max-width:min(90vw,340px); }
+  .toast{ background:var(--green); color:#fff; padding:12px 20px; border-radius:10px; font-size:.9rem;
+        font-weight:700; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,.25); opacity:0; transform:scale(.92);
+        transition:opacity .2s ease, transform .2s ease; }
+  .toast.show{ opacity:1; transform:scale(1); }
+  .toast.warn{ background:var(--amber); }
+  table{ border-collapse:collapse; margin:6px 0 4px 30px; width:calc(100% - 30px); font-size:.78rem; }
+  th, td{ border:1px solid var(--gray-200); padding:6px 8px; text-align:center; vertical-align:middle; }
+  th{ background:var(--gray-50); font-weight:700; color:var(--gray-700); }
+  .date-cell{ background:#fef9c3 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .hidden{ display:none !important; }
+  .pill{ display:inline-block; padding:2px 9px; border-radius:999px; font-size:.68rem; font-weight:700; }
+  .pill-todo{ background:#f3f4f6; color:var(--gray-500); border:1px solid var(--gray-300); margin-left:6px; }
+  .info-box{ margin:8px 0 4px 30px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px;
+        padding:8px 12px; font-size:.75rem; color:#1e40af; }
+  .warn-box{ margin:8px 0 4px 30px; background:#fef2f2; border:1px solid #fecaca; border-radius:10px;
+        padding:8px 12px; font-size:.75rem; color:#991b1b; }
+  .status{ margin-left:30px; font-size:.78rem; color:var(--green); font-weight:700; min-height:1.1em; }
+  .manual-tag{ font-size:.65rem; color:var(--amber); font-weight:700; }
+  .conflict-name{ background:#fee2e2; color:#991b1b; font-weight:700; border-radius:4px; padding:0 4px; }
+  .extra-duty{ background:#ede9fe; color:#6d28d9; font-weight:700; border-radius:4px; padding:0 4px; }
+  /* 반 탭 배정표의 이름 입력 칸(contenteditable). 예전 <input>과 비슷하게 보이도록 테두리·여백을
+     직접 준다 — 이름 하나하나에 색을 넣으려고(.extra-duty-text) <input> 대신 이 방식으로 바꿨다
+     (2026-09-09, PRD 7.5-x). */
+  .cell-edit, .friday-edit{ display:block; width:100%; min-height:1.5em; padding:3px 5px; border:1px solid var(--gray-300);
+        border-radius:6px; background:#fff; font:inherit; outline:none; cursor:text; box-sizing:border-box; }
+  .cell-edit:focus, .friday-edit:focus{ border-color:var(--blue); }
+  /* 보강(원래 요일이 아닌 날 청소하게 된) 학생 이름을 배정표 화면에서 파란 글자로 바로 보여준다
+     (2026-09-09 확정, PRD 7.5-x) — 인쇄에서 쓰는 .extra-duty(배경 있는 🔁 표시)와 달리, 여러
+     이름이 한 칸에 함께 들어있는 화면에서는 배경 없이 글자색만 다르게 해 더 자연스럽게 읽힌다. */
+  .extra-duty-text{ color:var(--blue); font-weight:700; }
+  fieldset{ border:1px solid var(--gray-200); border-radius:10px; margin-left:30px; padding:10px 12px; margin-bottom:10px; }
+  legend{ font-size:.75rem; color:var(--gray-500); padding:0 6px; }
+  @media print{
+    .no-print{ display:none !important; }
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
+  }
+
+/* Keep wide tables scrollable without widening the phone layout. */
+#assignTable, #statsTable, #rosterTable, #recyclingTable, #todayTable {
+  max-width: 100%;
+  overflow-x: auto;
+}

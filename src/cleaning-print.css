@@ -1,0 +1,18 @@
+
+      /* 브라우저가 인쇄 시 잉크 절약을 위해 배경색을 자동으로 빼버리는 경우가 있어,
+         모든 요소에 강제로 화면과 동일한 색을 인쇄하도록 지정한다(F7-b, 2026-09-07). */
+      *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
+      body{ font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; padding:24px; }
+      h2{ margin:0 0 4px; font-size:1.2rem; }
+      p{ margin:0 0 16px; color:#555; font-size:.85rem; }
+      table{ border-collapse:collapse; width:100%; font-size:.85rem; }
+      th, td{ border:1px solid #999; padding:6px 8px; text-align:center; vertical-align:middle; }
+      th{ background:#f3f4f6; }
+      .date-cell{ background:#fef9c3 !important; }
+      .manual-tag{ font-size:.8rem; color:#d97706; font-weight:700; }
+      .conflict-name{ background:#fee2e2; color:#991b1b; font-weight:700; border-radius:4px; padding:0 4px; }
+      .extra-duty{ background:#ede9fe; color:#6d28d9; font-weight:700; border-radius:4px; padding:0 4px; }
+      @media print{
+        *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
+      }
+    

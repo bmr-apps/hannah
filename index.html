@@ -1,34 +1,522 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>강의실 신청 테스트 · 학교생활지원 시스템</title>
+<link rel="stylesheet" href="./src/original-attributes.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>학교생활지원 시스템(4.5)</title>
+
+  <link rel="stylesheet" href="./src/classroom.css">
 </head>
-<body>
-<header><a href="./" aria-label="학교생활지원 시스템 첫 화면"><img src="./src/school-mark.svg" alt="" width="56" height="56"></a></header>
-<main>
-  <h1>강의실 신청 테스트</h1>
-  <p>등록된 가상 계정으로 신청해 주세요.</p>
-  <button id="login" type="button">Google 로그인</button>
-  <button id="logout" type="button" hidden>로그아웃</button>
-  <p id="auth-status" role="status"></p>
-  <form id="booking-test-form" hidden>
-    <label>강의실
-      <select name="room" required>
-        <option>강당</option><option>도서관</option><option>7-1</option>
-      </select>
-    </label>
-    <label>교시
-      <select name="period" required>
-        <option>저녁2교시</option><option>저녁1교시</option><option>9교시</option>
-      </select>
-    </label>
-    <button type="submit">신청</button>
-  </form>
-  <p id="booking-test-status" role="status"></p>
-</main>
-<script type="module" src="./src/booking-test.js"></script>
+<body class="bg-gray-50 min-h-screen">
+<a href="./" aria-label="첫 화면"><img src="./src/school-mark.svg" width="36" height="36" alt=""></a>
+<p class="school-test-notice">가상 데이터 테스트 화면</p>
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <div class="flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 cursor-pointer hover:text-blue-700 transition-colors" data-action-click="%5B%22location.reload%22%5D">학교생활지원 시스템</h1>
+        <div class="flex flex-wrap items-center gap-2">
+          <a href="cleaning_duty_3.html" target="_blank" rel="noopener" class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 inline-block">🧹 청소 당번표</a>
+          <button id="biblePageBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">📖 성경읽기</button>
+          <button id="adminToggleBtn" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">관리자 로그인</button>
+          <button id="logoutBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 hidden">로그아웃</button>
+        </div>
+      </div>
+
+      <!-- 관리자 로그인 -->
+      <div id="adminLoginForm" class="mb-8 max-w-md mx-auto hidden">
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <h2 class="text-xl font-bold mb-4 text-center">관리자 로그인</h2>
+          <div class="space-y-4">
+            <input type="text" id="adminId" placeholder="admin" class="w-full px-4 py-2 border border-gray-300 rounded">
+            <input type="password" id="adminPassword" placeholder="비밀번호" class="w-full px-4 py-2 border border-gray-300 rounded">
+            <button id="loginBtn" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">로그인</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 관리자 대시보드 -->
+      <div id="adminDashboard" class="hidden">
+        <h2 class="text-2xl font-bold mb-6">관리자 대시보드</h2>
+        <div class="grid grid-cols-10 gap-2 mb-6" data-original-style="4">
+          <button id="passwordChangeBtn" class="px-2 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">비밀번호 변경</button>
+          <button id="attendanceBtn" class="px-2 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">인원체크</button>
+          <button id="timeSettingsBtn" class="px-2 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">시간 설정</button>
+          <button id="addClassroomBtn" class="px-2 py-2 bg-green-600 text-white rounded hover:bg-green-700">강의실 추가</button>
+          <button id="scheduleNotesBtn" class="px-2 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">정기 특이사항</button>
+          <button id="availabilityBtn" class="px-2 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">요일별 신청허용 설정</button>
+          <button id="chromebookBtn" class="px-2 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700">💻 크롬북 신청</button>
+          <button id="historyBtn" class="px-2 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">이전 기록</button>
+          <button id="todayBookingsBtn" class="px-2 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">금일 신청현황</button>
+          <button id="bibleAdminBtn" class="px-2 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">성경읽기</button>
+        </div>
+
+        <!-- 성경읽기 관리자 패널 -->
+        <div id="bibleAdminPanel" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4 text-blue-800">성경읽기 현황</h3>
+          <!-- 기간 설정 -->
+          <div class="mb-4 p-3 bg-white border border-blue-200 rounded-lg flex flex-wrap items-end gap-3">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">시작일</label>
+              <div class="flex gap-1 items-center">
+                <select id="bibleStartY" class="px-2 py-1.5 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none"></select>
+                <span class="text-gray-400 text-xs">년</span>
+                <select id="bibleStartM" class="px-2 py-1.5 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none"></select>
+                <span class="text-gray-400 text-xs">월</span>
+                <select id="bibleStartD" class="px-2 py-1.5 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none"></select>
+                <span class="text-gray-400 text-xs">일</span>
+              </div>
+            </div>
+            <span class="text-gray-400 text-sm pb-1">~</span>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">종료일</label>
+              <div class="flex gap-1 items-center">
+                <select id="bibleEndY" class="px-2 py-1.5 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none"></select>
+                <span class="text-gray-400 text-xs">년</span>
+                <select id="bibleEndM" class="px-2 py-1.5 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none"></select>
+                <span class="text-gray-400 text-xs">월</span>
+                <select id="bibleEndD" class="px-2 py-1.5 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none"></select>
+                <span class="text-gray-400 text-xs">일</span>
+              </div>
+            </div>
+            <button data-action-click="%5B%22applyBibleRange%22%5D" class="px-4 py-1.5 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700">조회</button>
+            <button data-action-click="%5B%22clearBibleRange%22%5D" class="px-3 py-1.5 bg-gray-200 text-gray-600 text-sm rounded hover:bg-gray-300">전체</button>
+            <button data-action-click="%5B%22downloadBibleExcel%22%5D" class="px-3 py-1.5 bg-green-600 text-white text-sm font-bold rounded hover:bg-green-700">📥 엑셀 다운로드</button>
+            <div id="bibleRangeLabel" class="text-sm text-blue-700 font-medium hidden"></div>
+          </div>
+          <div id="bibleAdminList"></div>
+        </div>
+
+        <div id="passwordChangePanel" class="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4">관리자 비밀번호 변경</h3>
+          <div class="space-y-3">
+            <input type="password" id="currentPassword" placeholder="현재 비밀번호" class="w-full px-3 py-2 border rounded">
+            <input type="password" id="newPassword" placeholder="새 비밀번호" class="w-full px-3 py-2 border rounded">
+            <input type="password" id="confirmPassword" placeholder="비밀번호 확인" class="w-full px-3 py-2 border rounded">
+            <button id="changePasswordBtn" class="w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">변경</button>
+          </div>
+        </div>
+
+        <!-- 인원체크 패널 -->
+        <div id="attendancePanel" class="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg hidden">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold">인원체크</h3>
+            <div class="text-xs text-gray-500" id="attendanceDayLabel"></div>
+          </div>
+
+          <!-- 요일 탭 -->
+          <div class="flex gap-2 mb-4">
+            <button id="tabMonWed" data-action-click="%5B%22switchRosterTab%22%2C%22monwed%22%5D"
+              class="px-4 py-2 rounded-lg text-sm font-medium border transition-all">
+              월·수 명단
+            </button>
+            <button id="tabTueThu" data-action-click="%5B%22switchRosterTab%22%2C%22tuethu%22%5D"
+              class="px-4 py-2 rounded-lg text-sm font-medium border transition-all">
+              화·목 명단
+            </button>
+          </div>
+
+          <!-- 엑셀 업로드 영역 -->
+          <div class="mb-4 p-3 bg-white border border-purple-200 rounded-lg">
+            <div class="flex flex-wrap items-center gap-3">
+              <label class="text-sm font-medium text-gray-700">명단 업로드.xlsx (학년·반·번호·이름):</label>
+              <input type="file" id="rosterFileInput" accept=".xlsx,.xls"
+                class="text-sm text-gray-600 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 cursor-pointer">
+              <button id="clearRosterBtn" class="px-3 py-1 bg-red-100 text-red-600 text-sm rounded hover:bg-red-200">명단 초기화</button>
+            </div>
+            <p id="rosterStatus" class="text-xs text-gray-500 mt-2"></p>
+          </div>
+
+          <!-- 출석 현황 요약 -->
+          <div id="attendanceSummary" class="mb-4 grid grid-cols-4 gap-2 hidden"></div>
+
+          <!-- 학년·반별 명단 -->
+          <div id="attendanceList" class="space-y-4"></div>
+        </div>
+
+        <div id="timeSettingsPanel" class="mb-6 p-4 bg-indigo-50 border border-indigo-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4">신청 시간 설정</h3>
+          <div class="grid grid-cols-3 gap-6">
+            <div>
+              <h4 class="font-semibold mb-2 text-blue-700">🏫 강의실 — 9교시, 10교시</h4>
+              <label class="block text-sm mb-1">시작 시간</label>
+              <input type="time" id="regularStart" value="12:55" class="w-full px-3 py-2 border rounded mb-3">
+              <label class="block text-sm mb-1">마감 시간</label>
+              <input type="time" id="regularEnd" value="23:35" class="w-full px-3 py-2 border rounded">
+            </div>
+            <div>
+              <h4 class="font-semibold mb-2 text-blue-700">🏫 강의실 — 저녁1교시, 저녁2교시</h4>
+              <label class="block text-sm mb-1">시작 시간</label>
+              <input type="time" id="eveningStart" value="16:00" class="w-full px-3 py-2 border rounded mb-3">
+              <label class="block text-sm mb-1">마감 시간</label>
+              <input type="time" id="eveningEnd" value="20:00" class="w-full px-3 py-2 border rounded">
+            </div>
+            <div class="border-l-2 border-cyan-300 pl-6">
+              <h4 class="font-semibold mb-2 text-cyan-700">💻 크롬북 — 9교시, 10교시</h4>
+              <label class="block text-sm mb-1">시작 시간</label>
+              <input type="time" id="cbStart" value="08:00" class="w-full px-3 py-2 border border-cyan-300 rounded mb-3 focus:border-cyan-500">
+              <label class="block text-sm mb-1">마감 시간</label>
+              <input type="time" id="cbEnd" value="23:35" class="w-full px-3 py-2 border border-cyan-300 rounded focus:border-cyan-500">
+              <p class="text-xs text-gray-400 mt-2">이 시간 외에는 학생이 크롬북 신청 불가</p>
+            </div>
+          </div>
+          <button id="saveTimeSettingsBtn" class="mt-4 w-full px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">저장</button>
+        </div>
+
+        <div id="addClassroomPanel" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4">강의실 추가 / 목록</h3>
+          <div class="space-y-3">
+            <input type="text" id="newClassroomName" placeholder="강의실 이름 (예: 301호)" class="w-full px-3 py-2 border rounded">
+            <button id="addClassroomConfirmBtn" class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">추가</button>
+            <div id="classroomList" class="mt-3 space-y-2"></div>
+          </div>
+        </div>
+
+        <div id="scheduleNotesPanel" class="mb-6 p-4 bg-pink-50 border border-pink-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4">정기 특이사항 관리</h3>
+          <div class="space-y-3">
+            <select id="noteDay" class="w-full px-3 py-2 border rounded">
+              <option value="">요일 선택</option><option value="월">월요일</option><option value="화">화요일</option><option value="수">수요일</option><option value="목">목요일</option><option value="금">금요일</option>
+            </select>
+            <select id="noteClassroom" class="w-full px-3 py-2 border rounded">
+              <option value="">강의실 선택</option>
+            </select>
+            <select id="noteTimeSlot" class="w-full px-3 py-2 border rounded">
+              <option value="">시간 선택</option><option value="9교시">9교시</option><option value="10교시">10교시</option><option value="저녁1교시">저녁1교시</option><option value="저녁2교시">저녁2교시</option>
+            </select>
+            <input type="text" id="noteContent" placeholder="특이사항 입력" class="w-full px-3 py-2 border rounded">
+            <button id="saveNoteBtn" class="w-full px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">저장</button>
+            <div id="notesListContainer" class="mt-4 space-y-2"></div>
+          </div>
+        </div>
+
+        <div id="availabilityPanel" class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4">요일별 신청 허용 설정</h3>
+
+          <!-- 목요일 규칙 적용 요일 선택 -->
+          <div class="mb-5 p-4 bg-orange-50 border border-orange-300 rounded-lg">
+            <p class="text-sm font-bold text-orange-800 mb-2">📌 목요일 규칙 적용 요일</p>
+            <p class="text-xs text-gray-600 mb-3">도서관 저녁1·2교시, 강당 저녁2교시 특수 허용 규칙을 어느 요일에 적용할지 설정합니다.<br>목요일 규칙을 적용할 날짜를 지정하면, 지정된 날짜에만 적용되고 나머지 날은 목요일에만 적용됩니다.</p>
+            <div class="flex flex-wrap gap-2 items-center mb-2">
+              <span class="text-sm text-gray-600">날짜 추가:</span>
+              <input type="date" id="thursdayRuleDateInput" class="px-2 py-1 border rounded text-sm">
+              <button data-action-click="%5B%22addThuRuleDate%22%5D" class="px-3 py-1 bg-orange-500 text-white text-sm font-bold rounded hover:bg-orange-600">+ 추가</button>
+              <button data-action-click="%5B%22clearThuRuleDay%22%5D" class="px-3 py-1 bg-gray-400 text-white text-sm font-bold rounded hover:bg-gray-500">전체 삭제</button>
+              <span id="thuRuleSaveMsg" class="text-xs text-green-600 hidden">✅ 저장됨</span>
+            </div>
+            <div id="thuRuleDateTags" class="flex flex-wrap gap-2 min-h-8"></div>
+            <p class="text-xs text-orange-700 mt-2" id="thursdayRuleStatus"></p>
+          </div>
+
+          <!-- 탭 -->
+          <div class="flex gap-2 mb-4">
+            <button id="availTabBase" data-action-click="%5B%22switchAvailTab%22%2C%22base%22%5D"
+              class="px-4 py-2 text-sm font-bold rounded-lg bg-blue-600 text-white">📋 정기 설정</button>
+            <button id="availTabTemp" data-action-click="%5B%22switchAvailTab%22%2C%22temp%22%5D"
+              class="px-4 py-2 text-sm font-bold rounded-lg bg-white text-gray-600 border border-gray-300">⚡ 일시적 변경</button>
+          </div>
+
+          <!-- 정기 설정 탭 -->
+          <div id="availPanelBase">
+            <p class="text-xs text-gray-500 mb-3">📌 매주 기본으로 적용되는 설정입니다. 학기·분기마다 수정하세요.</p>
+            <div class="grid grid-cols-3 gap-3 mb-3">
+              <select id="availabilityDay" class="px-3 py-2 border rounded"><option value="">요일 선택</option><option value="월">월요일</option><option value="화">화요일</option><option value="수">수요일</option><option value="목">목요일</option><option value="금">금요일</option><option value="토">토요일</option><option value="일">일요일</option></select>
+              <button id="loadAvailabilityBtn" class="px-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">불러오기</button>
+              <button id="saveAvailabilityBtn" class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">정기설정 저장</button>
+            </div>
+            <div id="availabilityGrid" class="overflow-auto"></div>
+            <p class="text-xs text-gray-500 mt-2">체크된 항목만 신청 허용.</p>
+          </div>
+
+          <!-- 일시적 변경 탭 -->
+          <div id="availPanelTemp" class="hidden">
+            <p class="text-xs text-gray-500 mb-4">⚡ 특정 날짜에만 적용할 설정입니다. 해당 날짜가 지나면 자동으로 정기설정으로 복귀합니다.</p>
+
+            <div class="flex flex-col md:flex-row gap-4" data-original-style="5">
+
+              <!-- 왼쪽: 날짜 2개 + 불러오기 -->
+              <div class="w-full md:w-64 space-y-3">
+                <!-- 불러올 날짜 -->
+                <div class="p-3 bg-blue-50 border-2 border-blue-300 rounded-xl">
+                  <p class="text-sm font-bold text-blue-800 mb-1">📂 불러올 날짜</p>
+                  <p class="text-xs text-gray-500 mb-2">이 날짜의 설정을 기준으로 가져옵니다</p>
+                  <input type="date" id="tempLoadDate" class="w-full px-3 py-2 border-2 border-blue-200 rounded-lg text-sm bg-white">
+                </div>
+                <!-- 저장할 날짜 -->
+                <div class="p-3 bg-orange-50 border-2 border-orange-300 rounded-xl">
+                  <p class="text-sm font-bold text-orange-800 mb-1">💾 저장할 날짜</p>
+                  <p class="text-xs text-gray-500 mb-2">수정한 설정이 이 날짜에 적용됩니다</p>
+                  <input type="date" id="tempAvailDate" class="w-full px-3 py-2 border-2 border-orange-200 rounded-lg text-sm bg-white">
+                </div>
+                <!-- 불러오기 버튼 -->
+                <button data-action-click="%5B%22loadTempAvail%22%5D" class="w-full px-3 py-3 bg-yellow-500 text-white text-sm font-bold rounded-xl hover:bg-yellow-600">
+                  📂 불러오기
+                </button>
+              </div>
+
+              <!-- 화살표 -->
+              <div class="flex items-center" data-original-style="6">▶</div>
+
+              <!-- 오른쪽: 편집 영역 -->
+              <div id="tempEditSection" class="hidden flex-1">
+                <div class="p-3 bg-orange-50 border-2 border-orange-300 rounded-xl mb-3 flex justify-between items-center">
+                  <div>
+                    <p class="text-xs text-gray-500">저장 대상 날짜</p>
+                    <p id="tempEditDateLabel" class="text-base font-bold text-orange-800"></p>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <button data-action-click="%5B%22saveTempAvail%22%5D" class="px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-lg hover:bg-orange-600">
+                      💾 저장
+                    </button>
+                    <span id="tempAvailSaveMsg" class="text-xs text-green-600 hidden">✅ 저장됨</span>
+                  </div>
+                </div>
+                <div id="tempAvailabilityGrid" class="overflow-auto border rounded-xl"></div>
+              </div>
+
+              <!-- 불러오기 전 안내 -->
+              <div id="tempEditPlaceholder" class="flex-1 flex items-center justify-center" data-original-style="7">
+                <p class="text-gray-400 text-center text-sm">← 날짜를 입력하고<br>불러오기를 누르세요</p>
+              </div>
+
+            </div>
+
+            <!-- 등록된 일시적 설정 목록 -->
+            <div id="tempAvailList" class="space-y-2 mt-5"></div>
+          </div>
+        </div>
+
+        <div id="historyPanel" class="mb-6 p-4 bg-teal-50 border border-teal-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4">이전 기록 조회</h3>
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <select id="historyYear" class="px-3 py-2 border rounded"></select>
+            <select id="historyMonth" class="px-3 py-2 border rounded">
+              <option value="">월 선택</option><option value="1">1월</option><option value="2">2월</option><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="8">8월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+            </select>
+            <select id="historyDay" class="px-3 py-2 border rounded"></select>
+          </div>
+          <button id="viewHistoryBtn" class="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 mb-4">조회</button>
+          <!-- 서브탭 -->
+          <div id="historySubTabs" class="hidden">
+            <div id="historyDateLabel" class="text-sm font-bold text-teal-700 mb-3"></div>
+            <div class="flex gap-2 mb-4 border-b pb-2">
+              <button id="histSubTabClassroom" data-action-click="%5B%22switchHistorySubTab%22%2C%22classroom%22%5D"
+                class="px-4 py-2 text-sm font-bold rounded-t-lg bg-blue-600 text-white">🏫 강의실 신청 현황</button>
+              <button id="histSubTabChromebook" data-action-click="%5B%22switchHistorySubTab%22%2C%22chromebook%22%5D"
+                class="px-4 py-2 text-sm font-bold rounded-t-lg bg-white text-gray-600 border border-gray-300">💻 크롬북 신청 현황</button>
+            </div>
+            <div id="histSubPanelClassroom">
+              <div id="historyResultContainer" class="space-y-3"></div>
+            </div>
+            <div id="histSubPanelChromebook" class="hidden">
+              <div id="historyChromebookContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="todayBookingsPanel" class="mb-6 p-4 bg-white border border-gray-200 rounded-lg hidden">
+          <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <h3 class="text-lg font-bold">금일 신청 현황 (관리자)</h3>
+            <div class="flex gap-2 items-center flex-wrap">
+              <button id="selfCheckModeBtn" data-action-click="%5B%22toggleSelfCheckMode%22%5D"
+                class="px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-lg hover:bg-emerald-700">
+                🙋 자기체크 모드 ON
+              </button>
+              <span class="text-xs text-gray-400">|</span>
+              <span class="text-xs text-gray-500">인원체크 명단:</span>
+              <button id="todayTabMonWed" data-action-click="%5B%22switchRosterTab%22%2C%22monwed%22%5D" class="px-3 py-1 rounded text-sm font-medium border transition-all">월·수</button>
+              <button id="todayTabTueThu" data-action-click="%5B%22switchRosterTab%22%2C%22tuethu%22%5D" class="px-3 py-1 rounded text-sm font-medium border transition-all">화·목</button>
+            </div>
+          </div>
+          <!-- 서브탭 -->
+          <div class="flex gap-2 mb-4 border-b pb-2">
+            <button id="todaySubTabClassroom" data-action-click="%5B%22switchTodaySubTab%22%2C%22classroom%22%5D"
+              class="px-4 py-2 text-sm font-bold rounded-t-lg bg-blue-600 text-white">🏫 강의실 신청 현황</button>
+            <button id="todaySubTabChromebook" data-action-click="%5B%22switchTodaySubTab%22%2C%22chromebook%22%5D"
+              class="px-4 py-2 text-sm font-bold rounded-t-lg bg-white text-gray-600 border border-gray-300">💻 크롬북 신청 현황</button>
+          </div>
+          <!-- 강의실 신청 현황 서브탭 -->
+          <div id="todaySubPanelClassroom">
+            <!-- 자기체크 모드 배너 -->
+            <div id="selfCheckBanner" class="hidden mb-4 p-4 bg-emerald-50 border-2 border-emerald-400 rounded-xl text-center">
+              <p class="text-emerald-800 font-bold text-xl mb-1">🙋 본인 이름을 터치하세요</p>
+              <p class="text-emerald-600 text-sm">강당 · 저녁2교시 신청자 목록 — 다시 터치하면 체크 해제</p>
+            </div>
+            <!-- 관리자 뷰 -->
+            <div id="todayBookingsList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+            <!-- 자기체크 전용 목록 -->
+            <div id="selfCheckList" class="hidden"></div>
+          </div>
+          <!-- 크롬북 신청 현황 서브탭 -->
+          <div id="todaySubPanelChromebook" class="hidden">
+            <div id="chromebookStatusView"></div>
+          </div>
+        </div>
+
+        <!-- 크롬북 신청 패널 -->
+        <div id="chromebookPanel" class="mb-6 p-4 bg-cyan-50 border border-cyan-200 rounded-lg hidden">
+          <h3 class="text-lg font-bold mb-4 text-cyan-800">💻 크롬북 신청</h3>
+          <div class="mb-4 p-3 bg-white border border-cyan-200 rounded-lg flex items-center justify-between">
+            <span class="font-medium text-gray-700" id="chromebookTodayLabel"></span>
+          </div>
+          <!-- 반 선택 -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">반 선택</label>
+            <div class="flex flex-wrap gap-2">
+              <button data-action-click="%5B%22selectChromebookClass%22%2C%226%22%2C%220%22%5D" id="cbClassBtn_6_0"
+                class="px-4 py-2 text-sm font-bold rounded-lg border-2 border-cyan-300 text-cyan-700 bg-white hover:bg-cyan-50">6학년</button>
+              <button data-action-click="%5B%22selectChromebookClass%22%2C%227%22%2C%221%22%5D" id="cbClassBtn_7_1"
+                class="px-4 py-2 text-sm font-bold rounded-lg border-2 border-cyan-300 text-cyan-700 bg-white hover:bg-cyan-50">7-1반</button>
+              <button data-action-click="%5B%22selectChromebookClass%22%2C%227%22%2C%222%22%5D" id="cbClassBtn_7_2"
+                class="px-4 py-2 text-sm font-bold rounded-lg border-2 border-cyan-300 text-cyan-700 bg-white hover:bg-cyan-50">7-2반</button>
+              <button data-action-click="%5B%22selectChromebookClass%22%2C%228%22%2C%221%22%5D" id="cbClassBtn_8_1"
+                class="px-4 py-2 text-sm font-bold rounded-lg border-2 border-cyan-300 text-cyan-700 bg-white hover:bg-cyan-50">8-1반</button>
+              <button data-action-click="%5B%22selectChromebookClass%22%2C%228%22%2C%222%22%5D" id="cbClassBtn_8_2"
+                class="px-4 py-2 text-sm font-bold rounded-lg border-2 border-cyan-300 text-cyan-700 bg-white hover:bg-cyan-50">8-2반</button>
+            </div>
+          </div>
+          <!-- 학생 목록 -->
+          <div id="chromebookStudentList" class="hidden">
+            <div id="chromebookStudentTable"></div>
+            <button id="chromebookSaveBtn" data-action-click="%5B%22saveChromebookBookings%22%5D"
+              class="mt-4 w-full px-4 py-3 bg-cyan-600 text-white font-bold rounded-lg hover:bg-cyan-700">💾 저장</button>
+            <p id="chromebookSaveMsg" class="text-center text-sm text-green-600 mt-2 hidden">✅ 저장되었습니다.</p>
+          </div>
+          <div id="chromebookStudentEmpty" class="text-sm text-gray-400 text-center py-4 hidden">
+            명단에 해당 반 학생이 없습니다. 인원체크에서 명단을 업로드해주세요.
+          </div>
+        </div>
+      </div>
+
+      <!-- 사용자 뷰 -->
+      <div id="userView">
+        <div class="mb-8 grid grid-cols-1 md:grid-cols-5 gap-6 items-stretch">
+          <div class="md:col-span-3" id="calendarCard">
+            <div class="flex justify-between items-center mb-4">
+              <button id="prevMonth" class="px-3 py-1 bg-gray-200 rounded">←</button>
+              <h2 id="calendarTitle" class="text-xl font-bold"></h2>
+              <button id="nextMonth" class="px-3 py-1 bg-gray-200 rounded">→</button>
+            </div>
+            <div id="calendar" class="grid grid-cols-7 gap-2"></div>
+          </div>
+          <div class="md:col-span-2 bg-emerald-50 border border-emerald-200 rounded-lg p-4" id="cleaningPanelCard">
+            <h3 class="font-bold text-emerald-800 mb-2" id="cleaningPanelTitle">🧹 오늘의 청소 당번</h3>
+            <div id="cleaningPanelBody" class="text-sm text-gray-700 space-y-2">불러오는 중...</div>
+            <p class="text-xs text-emerald-600 mt-3">날짜를 클릭하면 그 날의 청소 당번을 볼 수 있어요.</p>
+          </div>
+        </div>
+
+        <div class="mb-6 grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">이름</label>
+            <input type="text" id="userName" placeholder="예: 9최별무리" class="w-full px-4 py-2 border rounded" maxlength="7" pattern="^[0-9][가-힣]{2,4}[A-Za-z]?$" title="숫자1 + 한글 2-4자 + 알파벳 1자(선택)">
+            <p id="nameHint" class="text-xs text-gray-500 mt-1">형식: 숫자 1자리 + 한글 2-4글자 + 대문자 알파벳 1자(선택), 공백 금지 (예: 7최별무리 또는 7최별무리A)</p>
+            <p id="nameError" class="text-sm text-red-600 mt-1 hidden"></p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">비밀번호</label>
+            <input type="password" id="userPassword" placeholder="비밀번호" class="w-full px-4 py-2 border rounded">
+          </div>
+        </div>
+
+        <!-- 탭 버튼 -->
+        <div class="flex gap-2 mb-4 border-b pb-2">
+          <button id="userTabClassroom" data-action-click="%5B%22switchUserTab%22%2C%22classroom%22%5D"
+            class="px-5 py-2 text-sm font-bold rounded-t-lg bg-blue-600 text-white">🏫 강의실 신청</button>
+          <button id="userTabChromebook" data-action-click="%5B%22switchUserTab%22%2C%22chromebook%22%5D"
+            class="px-5 py-2 text-sm font-bold rounded-t-lg bg-white text-gray-600 border border-gray-300">💻 크롬북 신청</button>
+        </div>
+
+        <!-- 강의실 신청 패널 -->
+        <div id="userPanelClassroom">
+          <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p class="text-yellow-700 text-sm">📌관리자가 허용 설정한 강의실·시간대에 한해 하루 1건만 신청 가능합니다.</p>
+            <p class="text-yellow-700 text-sm mt-1">📌특수허용: 목요일 규칙 적용 요일(기본: 목요일)에 도서관(저녁1/저녁2), 강당(저녁2)은 누구든 신청 가능. 단, 도서관 저녁2와 강당 저녁2는 중복 불가능.</p>
+            <p class="text-yellow-700 text-sm mt-1">🏫 학년 교실(6학년, 7-1, 7-2, 8-1, 8-2)의 저녁1/저녁2교시도 같은 목요일 규칙으로 중복 신청이 가능하며, 해당 학년 학생만 신청할 수 있습니다(예: 7학년은 7-1 또는 7-2 중 선택).</p>
+            <p class="text-yellow-700 text-sm mt-1">🎵 동아리/밴드/찬양팀 활동: '동아리', '밴드', '찬양팀' 특이사항이 있는 강의실을 신청한 경우, 같은 날 1개의 강의실을 추가로 신청할 수 있습니다.</p>
+          </div>
+          <div id="classroomSection" class="hidden">
+            <h2 id="selectedDateTitle" class="text-xl font-bold mb-4">강의실 현황</h2>
+            <div id="classroomDisplayList" class="grid grid-cols-1 lg:grid-cols-3 gap-6"></div>
+          </div>
+        </div>
+
+        <!-- 크롬북 신청 패널 (학생용) -->
+        <div id="userPanelChromebook" class="hidden">
+          <div class="mb-4 p-4 bg-cyan-50 border border-cyan-200 rounded-lg">
+            <p class="text-cyan-700 text-sm">오늘 크롬북을 사용할 교시와 목적을 입력하고 신청하세요. 반납기간 중인 경우 신청이 불가합니다.</p>
+            <p id="cbTimeInfo" class="text-cyan-600 text-xs mt-1"></p>
+          </div>
+          <div id="userCbContent">
+            <div class="py-10 text-center text-gray-400 text-sm">이름과 비밀번호를 입력하면 신청할 수 있습니다.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 성경읽기 전용 페이지 -->
+  <div id="biblePage" class="hidden max-w-4xl mx-auto p-6">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-blue-800">📖 성경읽기 체크</h1>
+      <button id="bibleBackBtn" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">← 돌아가기</button>
+    </div>
+    <!-- 로그인 폼 -->
+    <div id="bibleLoginForm" class="max-w-sm mx-auto bg-white border border-blue-200 rounded-xl p-6 shadow-sm">
+      <h2 class="text-lg font-bold text-center mb-4 text-blue-700">로그인</h2>
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1">이름</label>
+        <input id="bibleUserName" type="text" placeholder="예: 9최별무리"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none">
+        <p class="text-xs text-gray-400 mt-1">형식: 숫자1자리 + 한글 2~4자 (예: 9최별무리)</p>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
+        <input id="biblePassword" type="password" placeholder="비밀번호"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none">
+      </div>
+      <p id="bibleLoginError" class="text-red-500 text-sm mb-3 hidden"></p>
+      <button id="bibleLoginBtn" class="w-full py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">로그인 / 회원가입</button>
+      <p class="text-xs text-gray-400 text-center mt-2">처음 로그인 시 비밀번호가 자동 설정됩니다</p>
+    </div>
+    <!-- 대시보드 -->
+    <div id="bibleDashboard" class="hidden">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div class="text-lg font-bold text-blue-800" id="bibleWelcome"></div>
+        <button id="bibleLogoutBtn" class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">로그아웃</button>
+      </div>
+      <!-- 비밀번호 관리 -->
+      <div class="mb-4 p-3 bg-white border border-blue-100 rounded-xl flex flex-wrap items-center gap-3">
+        <span class="text-xs text-gray-500">현재 비밀번호:</span>
+        <button id="bibleShowPwBtn" data-action-click="%5B%22toggleBiblePw%22%5D"
+          class="text-sm text-blue-600 underline hover:text-blue-800">🔍 보기</button>
+        <span id="bibleCurrentPw" class="font-mono text-sm text-blue-700 font-bold hidden"></span>
+        <span class="text-xs text-gray-400">|</span>
+        <input id="bibleNewPw" type="text" placeholder="새 비밀번호 입력"
+          class="px-2 py-1 border border-gray-300 rounded text-sm focus:border-blue-400 focus:outline-none w-40">
+        <button data-action-click="%5B%22saveBiblePassword%22%5D" class="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">변경</button>
+        <span id="bibleNewPwMsg" class="text-xs text-green-600 hidden">✅ 변경되었습니다</span>
+      </div>
+      <div id="bibleProgressCard" class="mb-5 p-4 bg-white border border-blue-200 rounded-xl shadow-sm"></div>
+      <div class="flex gap-2 mb-4">
+        <button id="bibleTabOT" data-action-click="%5B%22switchBibleTab%22%2C%22OT%22%5D"
+          class="px-4 py-2 text-sm font-bold rounded-lg bg-blue-600 text-white">구약 (39권)</button>
+        <button id="bibleTabNT" data-action-click="%5B%22switchBibleTab%22%2C%22NT%22%5D"
+          class="px-4 py-2 text-sm font-bold rounded-lg bg-white text-gray-600 border border-gray-300">신약 (27권)</button>
+      </div>
+      <div id="bibleBookGrid"></div>
+      <div class="mt-4 text-center">
+        <button id="bibleSaveBtn" data-action-click="%5B%22saveBibleProgress%22%5D"
+          class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 text-lg">💾 저장</button>
+        <p id="bibleSaveMsg" class="text-green-600 text-sm mt-2 hidden">✅ 저장되었습니다!</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/classroom-0.js"></script>
+
+  <script type="module" src="./src/classroom-1.js"></script>
 </body>
 </html>
