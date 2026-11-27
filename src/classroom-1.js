@@ -1,3 +1,4 @@
+import { showPublicCleaningForDate } from './cleaning-public-read.js';
 import { encodeAction } from './original-events.js';
 
     import { initializeApp, getApps, getApp } from './preview-data.js';
@@ -174,19 +175,11 @@ import { encodeAction } from './original-events.js';
     window.__showCleaningForDate = renderCleaningForDate;
     window.__syncCleaningPanelHeight = cdSyncPanelHeight;
 
-    onValue(ref(cdDb, 'cleaningDuty'), (snap) => {
-      const data = snap.val() || {};
-      cdQuarter = data.quarter || { weeks: [] };
-      if (!cdQuarter.weeks) cdQuarter.weeks = [];
-      cdZones = data.zones || {};
-      cdClassroomAssignment = data.classroomAssignment || {};
-      cdRecyclingAssignment = data.recyclingAssignment || {};
-      cdWeekdayAssignment = data.weekdayAssignment || {};
-      cdFridayLabel = data.fridayLabel || {};
-      renderCleaningForDate(cdSelectedDate);
-    }, (err) => {
-      console.error('청소 당번표 데이터를 불러오지 못했습니다', err);
-      const body = document.getElementById('cleaningPanelBody');
-      if (body) body.textContent = '청소 당번표 데이터를 불러오지 못했습니다.';
-    });
-  
+    window.__showCleaningForDate = date => {
+      const title = document.getElementById('cleaningPanelTitle');
+      const container = document.getElementById('cleaningPanelBody');
+      const day = ['일','월','화','수','목','금','토'][date.getDay()];
+      title.textContent = '🧹 청소 당번 (' + day + ')';
+      void showPublicCleaningForDate(date,container).then(cdSyncPanelHeight);
+    };
+    window.__showCleaningForDate(new Date());
