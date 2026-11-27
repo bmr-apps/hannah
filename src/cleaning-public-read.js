@@ -24,7 +24,8 @@ export function renderPublicCleaningRows(container, rows) {
   const body = table.createTBody();
   for (const [index,group] of tableClasses.entries()) {
     if (group === '공통') continue;
-    const entries = rows.filter(row => row.class_name === group);
+    const entries = rows.filter(row => row.class_name === group)
+      .sort((a,b) => a.zone_order - b.zone_order);
     for (const [position,item] of entries.entries()) {
       const row = body.insertRow();
       const makeCell = value => {
@@ -40,7 +41,18 @@ export function renderPublicCleaningRows(container, rows) {
         classCell.classList.add('font-bold');
       }
       if (!friday) makeCell(item.zone_name);
-      makeCell(item.student_names.join(', '));
+      const names = makeCell('');
+      item.student_names.forEach((name,nameIndex) => {
+        if (nameIndex) names.append(', ');
+        if (item.conflict_names?.includes(name) || item.makeup_names?.includes(name)) {
+          const marked = document.createElement('span');
+          const conflict = item.conflict_names?.includes(name);
+          marked.className = conflict ? 'bg-red-100 text-red-800 font-bold rounded px-1' : 'text-blue-600 font-bold';
+          marked.title = conflict ? '이 날 분리수거 당번과 겹칩니다' : '고정 요일 외 보강 배정입니다';
+          marked.textContent = (conflict ? '⚠' : '') + name;
+          names.append(marked);
+        } else names.append(name);
+      });
     }
   }
   wrapper.append(table);
@@ -68,7 +80,7 @@ export async function showPublicCleaningForDate(date, container) {
   const selected = [date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
   container.textContent = '청소 당번을 불러오는 중입니다.';
   try {
-    const {data,error} = await supabase.rpc('read_cleaning_duties_for_date', {requested_date:selected});
+    const {data,error} = await supabase.rpc('read_cleaning_display_for_date', {requested_date:selected});
     if (error) throw error;
     if (version === requestVersion) renderPublicCleaningRows(container,data);
   } catch {
