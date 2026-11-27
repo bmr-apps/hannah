@@ -25,7 +25,8 @@ export default defineConfig(({ mode, command }) => {
   return {
     base: BASE,
     plugins: [csp(cspFor(SB)), spa404()],
-    build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0, rollupOptions: { input: [resolve('index.html'), resolve('cleaning_duty_3.html'), resolve('cleaning-print.html')] } },
+    build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0, rollupOptions: { input: [resolve('index.html'), resolve('cleaning_duty_3.html'), resolve('cleaning-print.html'), resolve('booking-test.html')] } },
     server: { port: 5173 }, preview: { port: 4173 },
   };
 });
+

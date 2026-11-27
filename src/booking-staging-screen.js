@@ -1,4 +1,4 @@
-export function bindStagingBookingForm(form, status, supabase) {
+export function bindStagingBookingForm(form, status, supabase, onSaved) {
   const button = form.querySelector('button[type=submit]');
   let submitting = false;
   const messages = {
@@ -24,6 +24,7 @@ export function bindStagingBookingForm(form, status, supabase) {
         test_period: fields.namedItem('period').value
       });
       status.textContent = error ? messages[error.code] ?? '신청을 저장하지 못했습니다.' : '예약이 저장되었습니다.';
+      if (!error) onSaved?.();
     } catch {
       status.textContent = '서버에 연결할 수 없습니다. 다시 시도해 주세요.';
     } finally {
@@ -32,3 +33,4 @@ export function bindStagingBookingForm(form, status, supabase) {
     }
   });
 }
+

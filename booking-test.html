@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>강의실 신청 테스트</title>
+</head>
+<body>
+  <main>
+    <a href="./" aria-label="학교생활지원 시스템 첫 화면"><img src="./src/school-mark.svg" alt="" width="32" height="32"></a>
+    <h1>강의실 신청 테스트</h1>
+    <p>등록된 테스트 계정으로 로그인해 주세요.</p>
+    <form id="test-login">
+      <label>이메일 <input type="email" name="email" autocomplete="username" required></label>
+      <label>비밀번호 <input type="password" name="password" autocomplete="current-password" required></label>
+      <button type="submit">로그인</button>
+    </form>
+    <button type="button" id="logout" hidden>로그아웃</button>
+    <p id="auth-status" role="status"></p>
+    <form id="booking-test-form" hidden>
+      <label>강의실 <select name="room" required>
+        <option>강당</option><option>도서관</option><option>7-1</option>
+      </select></label>
+      <label>교시 <select name="period" required>
+        <option>저녁2교시</option><option>저녁1교시</option><option>9교시</option>
+      </select></label>
+      <button type="submit">신청</button>
+      <p id="booking-test-status" role="status"></p>
+    </form>
+    <section id="test-requests" hidden>
+      <h2>내 테스트 신청</h2>
+      <p id="request-status" role="status"></p>
+      <ul id="request-list"></ul>
+    </section>
+  </main>
+  <script type="module" src="./src/booking-test.js"></script>
+</body>
+</html>
+
