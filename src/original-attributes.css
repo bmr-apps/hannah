@@ -135,4 +135,4 @@
 [data-meter="98"]{width:98%}
 [data-meter="99"]{width:99%}
 [data-meter="100"]{width:100%}
-.school-test-notice{margin:.35rem 1rem;color:#364b61;font-size:.8rem}
+.school-preview-footer{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:1rem auto 1.5rem;color:#364b61;font-size:.8rem}

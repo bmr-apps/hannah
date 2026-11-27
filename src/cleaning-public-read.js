@@ -22,21 +22,44 @@ export function renderPublicCleaningRows(container, rows) {
     head.append(cell);
   }
   const body = table.createTBody();
-  for (const group of tableClasses) {
-    for (const item of rows.filter(row => row.class_name === group)) {
+  for (const [index,group] of tableClasses.entries()) {
+    if (group === '공통') continue;
+    const entries = rows.filter(row => row.class_name === group);
+    for (const [position,item] of entries.entries()) {
       const row = body.insertRow();
-      const values = [item.class_name];
-      if (!friday) values.push(item.zone_name);
-      values.push(item.student_names.join(', '));
-      for (const value of values) {
+      const makeCell = value => {
         const cell = row.insertCell();
         cell.className = 'border border-emerald-200 px-2 py-1 align-top';
+        cell.dataset.dutyBand = String(index % 2);
         cell.textContent = value;
+        return cell;
+      };
+      if (position === 0) {
+        const classCell = makeCell(group);
+        classCell.rowSpan = entries.length;
+        classCell.classList.add('font-bold');
       }
+      if (!friday) makeCell(item.zone_name);
+      makeCell(item.student_names.join(', '));
     }
   }
   wrapper.append(table);
+  if (friday) {
+    const notice = document.createElement('div');
+    notice.className = 'text-xs text-emerald-700 mb-2';
+    notice.textContent = '금요일은 반별 문구로 안내됩니다.';
+    container.append(notice);
+  }
   container.append(wrapper);
+  if (!friday) {
+    const recycling = rows.find(row => row.class_name === '공통');
+    const note = document.createElement('div');
+    note.className = 'mt-2 pt-2 border-t border-emerald-200';
+    const title = document.createElement('b');
+    title.textContent = '♻️ 분리수거';
+    note.append(title, ': ' + (recycling?.student_names.join(', ') || '-'));
+    container.append(note);
+  }
 }
 
 let requestVersion = 0;

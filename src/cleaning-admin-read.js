@@ -18,7 +18,7 @@ const results = document.createElement('div');
 const status = document.createElement('p');
 status.setAttribute('role','status');
 section.append(title,login,signOut,status,results);
-document.getElementById('mainTabs').before(section);
+document.getElementById('todayView').after(section);
 
 login.addEventListener('click', async () => {
   const redirectTo = new URL('./cleaning_duty_3.html', location.href).href;
