@@ -1986,18 +1986,16 @@ installOriginalEvents();
       const todayData = chromebookBookings[todayKey] || {};
       const dow = getDayOfWeek(new Date());
 
-      // 오늘 강의실 신청한 학생 이름 → 강의실 이름 매핑 (9교시, 10교시) — NFC 정규화 적용
-      // 2026-11-05: 🏫 배지 대신 실제 "(강의실/교시)"를 보여주기 위해 이름만이 아니라 강의실
-      // 이름까지 저장한다(9·10교시는 중복신청이 없으므로 학생당 교시별로 강의실 1개뿐).
+      // 오늘 강의실 신청한 학생 이름 목록 (9교시, 10교시) — NFC 정규화 적용
       const norm = s => (s||'').normalize('NFC').trim();
-      const classroomBookedNames = { '9교시': new Map(), '10교시': new Map() };
+      const classroomBookedNames = { '9교시': new Set(), '10교시': new Set() };
       ['9교시','10교시'].forEach(s => {
         (classrooms||[]).forEach(room => {
           const key = `${todayKey}-${room}-${s}`;
           let list = bookings[key] || [];
           if (!Array.isArray(list)) list = Object.values(list).filter(b=>b&&b.name);
           else list = list.filter(b=>b&&b.name);
-          list.forEach(b => classroomBookedNames[s].set(norm(b.name), room));
+          list.forEach(b => classroomBookedNames[s].add(norm(b.name)));
         });
       });
 
@@ -2067,14 +2065,13 @@ installOriginalEvents();
             if (!data) return;
             const hasSlot = slot === '9교시' ? !!data.purpose9 : !!data.purpose10;
             if (!hasSlot) return;
-            // 강의실 신청 여부 확인 (app name 형식: 학년+이름) — 신청한 강의실/교시 표시용
+            // 강의실 신청 여부 확인 (app name 형식: 학년+이름) — 참고 배지 표시용
             const appName = norm(`${s.grade}${s.name}`);
-            const bookedRoom = classroomBookedNames[slot].get(appName);
+            const isClassroomBooked = classroomBookedNames[slot].has(appName);
             hasAny = true;
             const item = document.createElement('div');
-            // 2026-11-05: 9교시는 연한 하늘색, 10교시는 연한 초록색으로 바탕색을 구분
-            item.className = (slot==='9교시' ? 'bg-sky-50' : 'bg-green-50') + ' rounded px-2 py-1 text-xs';
-            item.innerHTML = `<div class="font-medium text-gray-800">${s.grade}-${s.class||'?'}-${s.number} ${s.name}${bookedRoom ? `(${bookedRoom})` : ''}</div>${(slot==='9교시'?data.purpose9:data.purpose10) ? `<div class="${slot==='9교시'?'text-sky-600':'text-green-600'} mt-0.5">${slot==='9교시'?data.purpose9:data.purpose10}</div>` : ''}`;
+            item.className = 'bg-cyan-50 rounded px-2 py-1 text-xs';
+            item.innerHTML = `<div class="font-medium text-gray-800">${s.grade}-${s.class||'?'}-${s.number} ${s.name}${isClassroomBooked ? ' <span class="text-blue-500" title="강의실도 함께 신청함">🏫</span>' : ''}</div>${(slot==='9교시'?data.purpose9:data.purpose10) ? `<div class="text-cyan-600 mt-0.5">${slot==='9교시'?data.purpose9:data.purpose10}</div>` : ''}`;
             colBody.appendChild(item);
           });
           if (!hasAny) {
