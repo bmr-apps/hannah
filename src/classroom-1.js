@@ -173,13 +173,23 @@ import { encodeAction } from './original-events.js';
 
     // index.html의 메인 달력(renderCalendar)이 날짜 버튼을 클릭할 때 이 함수를 호출한다.
     window.__showCleaningForDate = renderCleaningForDate;
-    window.__syncCleaningPanelHeight = cdSyncPanelHeight;
+    window.__syncCleaningPanelHeight = () => {
+      // Booking-disabled dates still have their original cleaning click listener.
+      for (const button of document.querySelectorAll('#calendar button:disabled')) {
+        button.disabled = false;
+        button.classList.remove('cursor-not-allowed');
+        button.classList.add('cursor-pointer');
+        button.title = '청소 당번 보기';
+      }
+      cdSyncPanelHeight();
+    };
+    window.__syncCleaningPanelHeight();
 
     window.__showCleaningForDate = date => {
       const title = document.getElementById('cleaningPanelTitle');
       const container = document.getElementById('cleaningPanelBody');
       const day = ['일','월','화','수','목','금','토'][date.getDay()];
-      title.textContent = '🧹 청소 당번 (' + day + ')';
+      title.textContent = '🧹 ' + (date.getMonth() + 1) + '/' + date.getDate() + ' 청소 당번 (' + day + ')';
       void showPublicCleaningForDate(date,container).then(cdSyncPanelHeight);
     };
     window.__showCleaningForDate(new Date());

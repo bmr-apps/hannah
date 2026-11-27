@@ -5,7 +5,7 @@ const tableClasses = ['6학년','7-1','7-2','8-1','8-2','공통'];
 export function renderPublicCleaningRows(container, rows) {
   container.replaceChildren();
   if (!rows.length) {
-    container.textContent = '오늘 표시할 청소 당번이 없습니다.';
+    container.textContent = '선택한 날짜에 표시할 청소 당번이 없습니다.';
     return;
   }
   const wrapper = document.createElement('div');
@@ -42,20 +42,13 @@ export function renderPublicCleaningRows(container, rows) {
 let requestVersion = 0;
 export async function showPublicCleaningForDate(date, container) {
   const version = ++requestVersion;
-  const koreanDay = new Intl.DateTimeFormat('en-CA', {
-    timeZone:'Asia/Seoul', year:'numeric',month:'2-digit',day:'2-digit'
-  });
   const selected = [date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
-  if (selected !== koreanDay.format(new Date())) {
-    container.textContent = '공개 화면에서는 오늘의 청소 당번을 볼 수 있습니다.';
-    return;
-  }
-  container.textContent = '오늘의 청소 당번을 불러오는 중입니다.';
+  container.textContent = '청소 당번을 불러오는 중입니다.';
   try {
-    const {data,error} = await supabase.rpc('read_today_cleaning_duties');
+    const {data,error} = await supabase.rpc('read_cleaning_duties_for_date', {requested_date:selected});
     if (error) throw error;
     if (version === requestVersion) renderPublicCleaningRows(container,data);
   } catch {
-    if (version === requestVersion) container.textContent = '오늘의 청소 당번을 불러오지 못했습니다.';
+    if (version === requestVersion) container.textContent = '청소 당번을 불러오지 못했습니다.';
   }
 }
