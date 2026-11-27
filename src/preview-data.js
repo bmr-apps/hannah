@@ -1,4 +1,27 @@
-const key = 'hannah:design-test:v1';
+const grade6Demo = new URLSearchParams(globalThis.location?.search ?? '').get('test') === 'grade6';
+const localToday = new Date();
+const demoDate = [localToday.getFullYear(), String(localToday.getMonth()+1).padStart(2,'0'),
+  String(localToday.getDate()).padStart(2,'0')].join('-');
+const key = grade6Demo ? 'hannah:design-test:grade6:' + demoDate : 'hannah:design-test:v1';
+
+function grade6Fixture() {
+  const names = ['가온','나래','다온','라온','마루','보람','소담','아람','하늘','이든','초롱'];
+  const roster = names.map((name,i) => ({name:'가상'+name,grade:'6',class:'0',number:i+1}));
+  const weekday = ['일','월','화','수','목','금','토'][localToday.getDay()];
+  const weekly = structuredClone(initialWeeklyAvailability);
+  (weekly[weekday] ??= {})['세미나실'] = { ...(weekly[weekday].세미나실 ?? {}), '9교시':true };
+  return {
+    adminPassword:'design-test-admin',
+    previewWeeklySettingsLoaded:true,
+    rosterMonWed:roster, rosterTueThu:roster, baseWeeklyAvailability:weekly,
+    bookings:{[demoDate+'-세미나실-9교시']:roster.map(student=>({
+      name:'6'+student.name, password:'test-student', timestamp:localToday.toISOString(), checked:false
+    }))},
+    chromebookBookings:{[demoDate]:{'6':Object.fromEntries(roster.map(student=>[
+      '6_0_'+student.number,{purpose9:'가상 수업 활동',purpose10:''}
+    ]))}}
+  };
+}
 const app = {};
 const listeners = new Set();
 
@@ -372,7 +395,9 @@ const initialWeeklyAvailability = {
 };
 
 function read() {
-  const root = JSON.parse(localStorage.getItem(key) ?? '{"adminPassword":"design-test-admin"}');
+  const stored = localStorage.getItem(key);
+  const root = stored ? JSON.parse(stored) : grade6Demo ? grade6Fixture() : {adminPassword:'design-test-admin'};
+  if (!stored && grade6Demo) localStorage.setItem(key, JSON.stringify(root));
   if (!root.previewWeeklySettingsLoaded) {
     root.baseWeeklyAvailability ??= structuredClone(initialWeeklyAvailability);
     root.previewWeeklySettingsLoaded = true;
