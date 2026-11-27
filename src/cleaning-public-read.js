@@ -13,7 +13,8 @@ export function renderPublicCleaningRows(container, rows) {
   const table = document.createElement('table');
   table.className = 'w-full text-xs border-collapse';
   const head = table.createTHead().insertRow();
-  for (const title of ['반','구역','담당 학생']) {
+  const friday = rows.every(row => row.zone_name === '안내');
+  for (const title of friday ? ['반','안내'] : ['반','구역','담당 학생']) {
     const cell = document.createElement('th');
     cell.scope = 'col';
     cell.className = 'border border-emerald-200 bg-emerald-100 px-2 py-1 text-left';
@@ -24,7 +25,10 @@ export function renderPublicCleaningRows(container, rows) {
   for (const group of tableClasses) {
     for (const item of rows.filter(row => row.class_name === group)) {
       const row = body.insertRow();
-      for (const value of [item.class_name,item.zone_name,item.student_names.join(', ')]) {
+      const values = [item.class_name];
+      if (!friday) values.push(item.zone_name);
+      values.push(item.student_names.join(', '));
+      for (const value of values) {
         const cell = row.insertCell();
         cell.className = 'border border-emerald-200 px-2 py-1 align-top';
         cell.textContent = value;
